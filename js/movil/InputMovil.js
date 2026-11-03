@@ -25,7 +25,7 @@ class InputMovil extends Input {
             const z = this.zaranda;
             dedo = {
                 id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY,
-                t0: performance.now(), lejos: 0,
+                t0: e.timeStamp, lejos: 0,   // la hora del evento: si un cuadro se demora, el toque no se alarga
                 // a dónde va la zaranda: a donde ya iba o, si estaba quieta, donde está
                 centro: this.pointerX !== null ? this.pointerX : (z ? z.x + z.width / 2 : null),
             };
@@ -50,7 +50,7 @@ class InputMovil extends Input {
         const soltar = (e) => {
             if (!dedo || e.pointerId !== dedo.id) return;
             const toque = e.type === 'pointerup' && dedo.lejos < InputMovil.TOQUE_MOV &&
-                          performance.now() - dedo.t0 < InputMovil.TOQUE_MS;
+                          e.timeStamp - dedo.t0 < InputMovil.TOQUE_MS;
             dedo = null;            // la zaranda termina de llegar a donde la mandó el dedo (pointerX)
             if (!toque) return;
             const r = canvas.getBoundingClientRect(), k = escala();

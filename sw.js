@@ -3,7 +3,7 @@
 // actual (y se actualiza la copia); la copia guardada solo se usa offline.
 // CACHE_NAME lo pone herramientas/sincronizar-movil.js con la huella de los
 // archivos: cuando algo cambia, se descarta la copia vieja.
-const CACHE_NAME = 'drk-movil-a95e5e77cc';
+const CACHE_NAME = 'drk-movil-80c39450f8';
 const ASSETS = [
     './',
     './index.html',
