@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#120d0a">
+    <meta name="description" content="Dr. K para celular y tablet: excavá el Pueblo Perdido de la Quebrada (cultura Aguada) o una kancha de El Shincal de Quimivil (inca), estrato por estrato.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dr. K">
+
+    <title>Dr. K</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="iconos/icono.svg">
+    <link rel="apple-touch-icon" href="iconos/icono-180.png">
+    <link rel="stylesheet" href="css/movil.css">
+</head>
+<body>
+    <!-- Arriba: estrato, puntos, vidas, letras y botones -->
+    <header id="barra">
+        <div class="fila">
+            <span id="b-nivel"></span>
+            <span class="botones">
+                <button id="b-sonido" type="button" aria-label="Sonido"></button>
+                <button id="pauseBtn" type="button" aria-label="Pausa">II</button>
+            </span>
+        </div>
+        <div class="fila">
+            <span id="b-puntos"></span>
+            <span id="b-record"></span>
+            <span id="b-vidas"></span>
+        </div>
+        <div class="fila" id="b-letras"></div>
+    </header>
+
+    <!-- El juego y, debajo, la zona para el pulgar -->
+    <main id="zona">
+        <div id="game-container">
+            <canvas id="gameCanvas" width="720" height="1080"></canvas>
+            <div id="capa" hidden></div>
+        </div>
+        <div id="pad" aria-hidden="true">
+            <span class="dedo">☝</span>
+            <span>Deslizá el dedo en cualquier parte<br>↔ mueve la zaranda · ↕ la sube<br>tocá para lanzar el cucharín</span>
+        </div>
+    </main>
+
+    <!-- Portada: elegir el sitio -->
+    <section id="inicio" hidden>
+        <div id="i-titulo" role="img" aria-label="Dr. K"></div>
+        <h1 id="i-sitio"></h1>
+        <div id="i-tarjetas"></div>
+        <button id="i-excavar" type="button" class="grande">▶ Excavar</button>
+        <p class="ayuda">Apoyá el dedo en cualquier parte de la pantalla y deslizalo: para los costados mueve la zaranda, para arriba o abajo la sube y la baja con la soga. Un toque corto lanza el cucharín.</p>
+        <p class="creditos">Creador Dr. Emilio A. Villafañez — LATDAA, Escuela de Arqueología<br>Universidad Nacional de Catamarca · Fundación Azara</p>
+    </section>
+
+    <div id="girar"><span>↻</span>Girá el teléfono:<br>Dr. K se juega en vertical</div>
+
+    <!-- El núcleo del juego (el mismo que el de escritorio; ver herramientas/sincronizar-movil.js) -->
+    <script src="js/Assets.js"></script>
+    <script src="js/Input.js"></script>
+    <script src="js/LevelManager.js"></script>
+    <script src="js/ParticleSystem.js"></script>
+    <script src="js/HUD.js"></script>
+    <script src="js/Pincel.js"></script>
+    <script src="js/PerfilRecinto.js"></script>
+    <script src="js/PerfilKancha.js"></script>
+    <script src="js/Sitios.js"></script>
+    <script src="js/Excavation.js"></script>
+    <script src="js/PixelArt.js"></script>
+    <script src="js/Drop.js"></script>
+    <script src="js/Ball.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/Sound.js"></script>
+    <script src="js/Game.js"></script>
+    <!-- Lo propio del celular y la tablet -->
+    <script src="js/movil/InputMovil.js"></script>
+    <script src="js/movil/HUDMovil.js"></script>
+    <script src="js/movil/GameMovil.js"></script>
+    <script src="js/movil/main.js"></script>
+</body>
+</html>

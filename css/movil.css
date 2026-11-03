@@ -1,0 +1,294 @@
+/* Dr. K para celular y tablet. La pantalla se reparte en tres franjas:
+   arriba la barra (estrato, puntos, letras), en el medio el juego y abajo
+   la zona para el pulgar. El tamaño del juego lo fija GameMovil.fitContainer. */
+:root {
+    --fondo: #1a1512;
+    --barra: #120d0a;
+    --tierra: #4a3424;
+    --luz: #ffcc99;
+    --terracota: #e29578;
+    --oro: #f1c40f;
+    --texto: #e8dcc8;
+    --tenue: #bdae9a;
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;                  /* el dedo es del juego: nada de zoom ni de arrastrar la página */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    box-sizing: border-box;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+button {
+    font-family: inherit;
+    color: var(--terracota);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(226, 149, 120, 0.5);
+    border-radius: 10px;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+button:active { background: rgba(226, 149, 120, 0.25); }
+
+/* ── Barra de arriba ── */
+#barra {
+    flex: none;
+    background: var(--barra);
+    border-bottom: 2px solid var(--tierra);
+    padding: 4px 10px 6px;
+    font-size: 15px;
+    line-height: 1.2;
+}
+.fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 24px;
+}
+#b-nivel {
+    color: var(--luz);
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.botones { display: flex; gap: 8px; flex: none; }
+.botones button {
+    width: 46px;
+    height: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0;
+}
+#b-puntos { color: var(--luz); }
+#b-record { color: var(--oro); }
+#b-vidas { color: #ff8a80; font-weight: bold; }
+
+/* Las letras de las palabras y del secreto */
+#b-letras {
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 2px;
+    column-gap: 12px;
+    font-size: 15px;
+    margin-top: 2px;
+}
+#b-letras i {
+    font-style: normal;
+    display: inline-block;
+    width: 0.78em;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.22);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+}
+#b-letras .activa i { color: rgba(255, 255, 255, 0.55); border-bottom-color: rgba(226, 149, 120, 0.6); }
+#b-letras i.ok { color: var(--terracota); font-weight: bold; border-bottom-color: transparent; }
+#b-letras .secreto {
+    border: 1px solid rgba(241, 196, 15, 0.5);
+    background: rgba(241, 196, 15, 0.08);
+    border-radius: 4px;
+    padding: 0 4px;
+}
+#b-letras .secreto i { color: rgba(241, 196, 15, 0.28); border-bottom: none; }
+#b-letras .secreto i.ok { color: var(--oro); text-shadow: 0 0 5px #f39c12; }
+
+/* ── El juego y la zona del pulgar ── */
+#zona {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#game-container {
+    flex: none;
+    position: relative;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.8);
+}
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+#pad {
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(226, 149, 120, 0.6);
+    border-top: 1px dashed rgba(226, 149, 120, 0.25);
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(255, 255, 255, 0.015) 14px 28px);
+}
+#pad .dedo { font-size: 34px; opacity: 0.7; }
+#pad.chico { display: none; }
+
+/* ── Capa sobre el juego: tarjeta del estrato, pausa, fin ── */
+#capa {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    pointer-events: none;                /* los toques siguen siendo del juego... */
+}
+#capa[hidden] { display: none; }
+#capa.liviana { background: rgba(0, 0, 0, 0.22); }
+#capa button { pointer-events: auto; }  /* ...menos los botones */
+#capa h2 {
+    margin: 0;
+    font-size: clamp(24px, 7vw, 38px);
+    color: var(--luz);
+    text-shadow: 0 2px 8px #000;
+}
+#capa h2.verde { color: #2ecc71; }
+#capa h2.oro { color: var(--oro); }
+#capa h2.rojo { color: #e74c3c; }
+#capa .sub { margin: 0; font-size: 16px; color: #ddd; text-shadow: 0 1px 4px #000; }
+#capa .nota { margin: 0; font-size: 16px; font-weight: bold; color: #2ecc71; }
+#capa .pista { margin: 6px 0 0; font-size: 15px; color: var(--luz); animation: latido 1.6s ease-in-out infinite; }
+@keyframes latido { 50% { opacity: 0.45; } }
+.dato {
+    max-width: 30em;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid var(--terracota);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+.dato b { display: block; color: var(--oro); margin-bottom: 4px; }
+.resumen { font-size: 15px; line-height: 1.6; color: #d0d0d0; }
+.resumen .total { font-size: 19px; font-weight: bold; color: #ecf0f1; }
+.resumen .nuevo { color: var(--oro); font-weight: bold; }
+.botonera { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 6px; }
+.botonera button, button.grande {
+    min-height: 52px;
+    padding: 0 22px;
+    font-size: 18px;
+    font-weight: bold;
+}
+button.principal, #i-excavar {
+    color: #1a1512;
+    background: #2ecc71;
+    border-color: #27ae60;
+}
+button.principal:active, #i-excavar:active { background: #27ae60; }
+
+/* ── Portada ── */
+#inicio {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    overflow-y: auto;
+    touch-action: pan-y;                 /* acá sí se puede deslizar la página si no entra */
+    background: var(--fondo);
+    padding: env(safe-area-inset-top) 0 calc(16px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    box-sizing: border-box;
+}
+#inicio[hidden] { display: none; }
+#i-titulo {
+    width: 100%;
+    max-width: 900px;
+    flex: none;
+    aspect-ratio: 1280 / 518;            /* la imagen cortada bajo el rombo, como en la compu */
+    background: url(../assets/title_bg.jpg) center top / 100% auto no-repeat;
+}
+#i-sitio {
+    margin: 0 12px;
+    font-size: clamp(19px, 5.4vw, 28px);
+    color: #e8b860;
+    text-shadow: 0 2px 6px #000;
+}
+#i-tarjetas {
+    width: min(100% - 24px, 860px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 12px;
+}
+.tarjeta {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    padding: 10px;
+    text-align: left;
+    color: var(--tenue);
+    background: rgba(26, 18, 13, 0.9);
+    border: 2px solid var(--tierra);
+    border-radius: 10px;
+}
+.tarjeta canvas {
+    flex: none;
+    width: 74px;
+    height: 136px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    image-rendering: auto;
+}
+.tarjeta .t-texto { display: flex; flex-direction: column; gap: 6px; padding: 2px 0; }
+.tarjeta .t-nombre { font-size: 18px; font-weight: bold; line-height: 1.2; }
+.tarjeta .t-detalle { font-size: 14px; color: #8f8170; }
+.tarjeta .t-record { margin-top: auto; font-size: 14px; color: #9a8240; }
+.tarjeta.elegida { border-color: var(--luz); background: rgba(52, 36, 24, 0.95); box-shadow: 0 0 12px rgba(255, 204, 153, 0.25); }
+.tarjeta.elegida .t-nombre { color: var(--luz); }
+.tarjeta.elegida .t-detalle { color: #d8c4a8; }
+.tarjeta.elegida .t-record { color: var(--oro); }
+#i-excavar { width: min(100% - 24px, 420px); font-size: 22px; min-height: 58px; }
+#inicio .ayuda { margin: 0 18px; max-width: 34em; font-size: 14px; line-height: 1.45; color: #cfcfcf; }
+#inicio .creditos { margin: 0 18px; font-size: 12px; line-height: 1.5; color: #9a9a9a; }
+
+/* ── Teléfono acostado: se juega en vertical ── */
+#girar {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: var(--fondo);
+    color: var(--luz);
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#girar span { font-size: 54px; }
+@media (orientation: landscape) and (max-height: 520px) {
+    #girar { display: flex; }
+}

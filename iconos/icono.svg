@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Fondo (safe area maskable: zona segura es el círculo central de radio ~205) -->
+  <rect width="512" height="512" fill="#1a1512"/>
+
+  <!-- Estratos de tierra horizontal (centrados en zona segura) -->
+  <g>
+    <rect x="0" y="160" width="512" height="44" fill="#6b5a45"/>
+    <rect x="0" y="204" width="512" height="44" fill="#7d5039"/>
+    <rect x="0" y="248" width="512" height="44" fill="#5d4037"/>
+    <rect x="0" y="292" width="512" height="44" fill="#5e3c2b"/>
+    <rect x="0" y="336" width="512" height="44" fill="#42403a"/>
+    <!-- Borde sutil entre estratos -->
+    <line x1="0" y1="204" x2="512" y2="204" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+    <line x1="0" y1="248" x2="512" y2="248" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+    <line x1="0" y1="292" x2="512" y2="292" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+    <line x1="0" y1="336" x2="512" y2="336" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+  </g>
+
+  <!-- Cucharín de excavación inclinado -->
+  <g transform="translate(256 256) rotate(-25)">
+    <!-- sombra -->
+    <ellipse cx="6" cy="106" rx="40" ry="10" fill="rgba(0,0,0,0.45)"/>
+    <!-- mango de madera -->
+    <rect x="-14" y="-10" width="28" height="100" rx="6" fill="#4a2f1d"/>
+    <rect x="-10" y="-6" width="14" height="92" rx="4" fill="#8b5a2b"/>
+    <rect x="-7" y="-3" width="6" height="86" fill="#b58b5e"/>
+    <!-- collarín metálico -->
+    <rect x="-22" y="-30" width="44" height="20" fill="#555"/>
+    <rect x="-20" y="-28" width="6" height="16" fill="#ddd"/>
+    <!-- hoja del cucharín (forma de pala) -->
+    <polygon points="-72,-30 72,-30 50,-130 -50,-130" fill="#d0d0d0"/>
+    <polygon points="-72,-30 0,-130 0,-30" fill="#f0f0f0"/>
+    <polygon points="0,-30 72,-30 0,-130" fill="#a0a0a0"/>
+    <line x1="0" y1="-30" x2="0" y2="-130" stroke="#888" stroke-width="3"/>
+  </g>
+</svg>
